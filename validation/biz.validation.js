@@ -27,6 +27,9 @@ const updateBizSchema = Joi.object({
 const deleteBizSchema = Joi.object({
   id: Joi.string().length(24).hex().required().trim(),
 });
+const findBizcardByIdSchema = Joi.object({
+  id: Joi.string().length(24).hex().required().trim(),
+});
 
 const validateNewBizSchema = (userInput) => {
   return validate(newBizSchema, userInput);
@@ -37,10 +40,14 @@ const validateUpBizSchema = (userInput) => {
 const validateDeleteBizSchema = (userInput) => {
   return validate(deleteBizSchema, userInput);
 };
+const validateFindBizcardByIdSchema = (userInput) => {
+  return validate(findBizcardByIdSchema, userInput);
+};
 
 module.exports = {
   newBizSchema,
   validateNewBizSchema,
   validateUpBizSchema,
   validateDeleteBizSchema,
+  validateFindBizcardByIdSchema,
 };

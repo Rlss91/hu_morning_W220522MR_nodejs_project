@@ -5,18 +5,33 @@ const {
   validateNewBizSchema,
   validateUpBizSchema,
   validateDeleteBizSchema,
+  validateFindBizcardByIdSchema,
 } = require("../../validation/biz.validation");
-const { createNewBizCard } = require("../../models/bizcards.model");
+const {
+  createNewBizCard,
+  showAllBizcards,
+  showBizcardById,
+} = require("../../models/bizcards.model");
 
 // /api/bizcards
-router.get("/", (req, res) => {
-  const bizCardsArr = ["biz1", "biz2", "biz3"];
-  res.json({ bizCardsArr, status: "ok" });
+router.get("/", async (req, res) => {
+  try {
+    const allBizcards = await showAllBizcards();
+    res.json(allBizcards);
+  } catch (err) {
+    res.status(400).json({ error: err });
+  }
 });
 
 // /api/bizcards/getbyid/321321315
-router.get("/getbyid/:id", (req, res) => {
-  console.log("params", req.params);
+router.get("/getbyid/:id", async (req, res) => {
+  try {
+    const validatedValue = await validateFindBizcardByIdSchema(req.params);
+    const bizcardData = await showBizcardById(validatedValue.id);
+    res.json(bizcardData);
+  } catch (error) {
+    res.status(400).json({ error });
+  }
 });
 
 router.post("/", async (req, res) => {

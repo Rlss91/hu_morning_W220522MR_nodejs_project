@@ -34,6 +34,16 @@ const createNewBizCard = (
   return bizcard.save();
 };
 
+const showAllBizcards = () => {
+  return Bizcards.find({});
+};
+
+const showBizcardById = (id) => {
+  return Bizcards.findById(id);
+};
+
 module.exports = {
   createNewBizCard,
+  showAllBizcards,
+  showBizcardById,
 };
