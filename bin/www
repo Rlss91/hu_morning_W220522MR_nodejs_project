@@ -7,6 +7,7 @@
 var app = require("../app");
 var debug = require("debug")("bizcard:server");
 var http = require("http");
+const connectToDB = require("../models/connectToDB");
 
 /**
  * Get port from environment and store in Express.
@@ -20,6 +21,20 @@ app.set("port", port);
  */
 
 var server = http.createServer(app);
+
+/**
+ * connect to mongo
+ */
+
+connectToDB
+  .then(() => {
+    debug("connected to db");
+  })
+  .catch((err) => {
+    debug("fatal error");
+    debug(err);
+    process.exit(1);
+  });
 
 /**
  * Listen on provided port, on all network interfaces.

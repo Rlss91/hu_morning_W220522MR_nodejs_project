@@ -6,6 +6,7 @@ const {
   validateUpBizSchema,
   validateDeleteBizSchema,
 } = require("../../validation/biz.validation");
+const { createNewBizCard } = require("../../models/bizcards.model");
 
 // /api/bizcards
 router.get("/", (req, res) => {
@@ -28,6 +29,14 @@ router.post("/", async (req, res) => {
   */
   try {
     const validatedValue = await validateNewBizSchema(req.body);
+    const userData = await createNewBizCard(
+      validatedValue.bizName,
+      validatedValue.bizDescription,
+      validatedValue.bizAddress,
+      validatedValue.bizPhone,
+      validatedValue.bizImg
+    );
+    res.status(201).json(userData);
   } catch (err) {
     res.status(400).json({ error: err });
   }
