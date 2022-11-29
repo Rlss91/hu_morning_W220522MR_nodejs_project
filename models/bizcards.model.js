@@ -42,8 +42,26 @@ const showBizcardById = (id) => {
   return Bizcards.findById(id);
 };
 
+const updateBizcardById = (
+  id,
+  bizName,
+  bizDescription,
+  bizAddress,
+  bizPhone,
+  bizImg
+) => {
+  return Bizcards.findByIdAndUpdate(id, {
+    bizName,
+    bizDescription,
+    bizAddress,
+    bizPhone,
+    bizImg,
+  });
+};
+
 module.exports = {
   createNewBizCard,
   showAllBizcards,
   showBizcardById,
+  updateBizcardById,
 };

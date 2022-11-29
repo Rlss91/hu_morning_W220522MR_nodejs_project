@@ -11,6 +11,7 @@ const {
   createNewBizCard,
   showAllBizcards,
   showBizcardById,
+  updateBizcardById,
 } = require("../../models/bizcards.model");
 
 // /api/bizcards
@@ -59,6 +60,15 @@ router.post("/", async (req, res) => {
 router.put("/", async (req, res) => {
   try {
     const validatedValue = await validateUpBizSchema(req.body);
+    const userData = await updateBizcardById(
+      validatedValue.id,
+      validatedValue.bizName,
+      validatedValue.bizDescription,
+      validatedValue.bizAddress,
+      validatedValue.bizPhone,
+      validatedValue.bizImg
+    );
+    res.json({ msg: "bizcard updated" });
   } catch (err) {
     res.status(400).json({ error: err });
   }
