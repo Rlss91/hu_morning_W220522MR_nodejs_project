@@ -12,6 +12,7 @@ const {
   showAllBizcards,
   showBizcardById,
   updateBizcardById,
+  deleteBizcardById,
 } = require("../../models/bizcards.model");
 
 // /api/bizcards
@@ -76,6 +77,8 @@ router.put("/", async (req, res) => {
 router.delete("/:id", async (req, res) => {
   try {
     const validatedValue = await validateDeleteBizSchema(req.params);
+    const bizcardData = await deleteBizcardById(validatedValue.id);
+    res.json(bizcardData);
   } catch (err) {
     res.status(400).json({ error: err });
   }

@@ -59,9 +59,14 @@ const updateBizcardById = (
   });
 };
 
+const deleteBizcardById = (id) => {
+  return Bizcards.findByIdAndDelete(id);
+};
+
 module.exports = {
   createNewBizCard,
   showAllBizcards,
   showBizcardById,
   updateBizcardById,
+  deleteBizcardById,
 };
