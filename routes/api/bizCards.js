@@ -58,7 +58,7 @@ router.post("/", async (req, res) => {
     res.status(400).json({ error: err });
   }
 });
-router.put("/", async (req, res) => {
+router.patch("/", async (req, res) => {
   try {
     const validatedValue = await validateUpBizSchema(req.body);
     const userData = await updateBizcardById(
