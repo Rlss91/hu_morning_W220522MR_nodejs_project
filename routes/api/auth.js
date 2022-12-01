@@ -36,9 +36,15 @@ router.post("/login", async (req, res) => {
     if (!isEqual) {
       throw "invalid email/password";
     }
-    const token = await genToken({ email: user.email, id: user._id });
+    const token = await genToken({
+      email: user.email,
+      id: user._id,
+      isAdmin: user.isAdmin,
+    });
     res.json({ token });
-  } catch (error) {}
+  } catch (error) {
+    res.status(400).json({ error });
+  }
 });
 
 module.exports = router;
