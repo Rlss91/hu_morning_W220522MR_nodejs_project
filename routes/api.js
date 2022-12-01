@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const bizCardsRouter = require("./api/bizCards");
 const animalsRouter = require("./api/animals");
+const authRouter = require("./api/auth");
 
 // http://localhost:3030/api/newuser
 router.get("/newuser", (req, res) => {
@@ -10,5 +11,6 @@ router.get("/newuser", (req, res) => {
 
 router.use("/bizcards", bizCardsRouter);
 router.use("/animals", animalsRouter);
+router.use("/auth", authRouter);
 
 module.exports = router;
