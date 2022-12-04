@@ -73,7 +73,8 @@ router.post("/resetpassword/:token", async (req, res) => {
     const payload = await verifyToken(req.params.token);
     const userData = await findUserByEmail(payload.email);
     if (!userData) throw "something went wrong";
-    await updatePasswordById(userData._id, req.body.password);
+    const hashedPassword = await createHash(req.body.password);
+    await updatePasswordById(userData._id, hashedPassword);
     res.json({ msg: "password updated" });
   } catch (err) {
     res.status(400).json({ err });
