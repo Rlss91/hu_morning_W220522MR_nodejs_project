@@ -4,10 +4,12 @@ const router = express.Router();
 const {
   validateRegisterSchema,
   validateLoginSchema,
+  validateForgotPasswordSchema,
 } = require("../../validation/auth.validation");
 const { findUserByEmail, createNewUser } = require("../../models/users.model");
 const { createHash, cmpHash } = require("../../config/bcrypt");
 const { genToken } = require("../../config/jwt");
+const { json } = require("express");
 
 router.post("/register", async (req, res) => {
   try {
@@ -44,6 +46,20 @@ router.post("/login", async (req, res) => {
     res.json({ token });
   } catch (error) {
     res.status(400).json({ error });
+  }
+});
+
+router.post("/forgotpassword", async (req, res) => {
+  try {
+    const validatedValue = await validateForgotPasswordSchema(req.body);
+    const userData = await findUserByEmail(validatedValue.email);
+    if (!userData) throw "check your inbox";
+    const jwt = await genToken({ email: userData.email }, "1h");
+    //send email or sms
+    console.log("http://localhost:3000/resetpassword/" + jwt);
+    res.json({ msg: "check your inbox" });
+  } catch (error) {
+    res.json({ msg: error });
   }
 });
 

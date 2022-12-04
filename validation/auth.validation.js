@@ -25,6 +25,10 @@ const loginSchema = Joi.object({
     .required(),
 });
 
+const forgotPasswordSchema = Joi.object({
+  email: Joi.string().min(8).max(255).email().required().trim(),
+});
+
 const validateRegisterSchema = (userInput) => {
   return validate(registerSchema, userInput);
 };
@@ -33,7 +37,12 @@ const validateLoginSchema = (userInput) => {
   return validate(loginSchema, userInput);
 };
 
+const validateForgotPasswordSchema = (userInput) => {
+  return validate(forgotPasswordSchema, userInput);
+};
+
 module.exports = {
   validateRegisterSchema,
   validateLoginSchema,
+  validateForgotPasswordSchema,
 };
