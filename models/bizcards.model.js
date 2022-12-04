@@ -7,7 +7,7 @@ const bizcardsSchema = new Schema({
   bizAddress: { type: String, required: true },
   bizPhone: { type: String, required: true },
   bizImg: { type: String },
-  //we need to add owner id
+  ownerId: { type: Schema.Types.ObjectId, ref: "users" },
 });
 
 /*
@@ -22,7 +22,8 @@ const createNewBizCard = (
   bizDescription,
   bizAddress,
   bizPhone,
-  bizImg
+  bizImg,
+  ownerId
 ) => {
   const bizcard = new Bizcards({
     bizName,
@@ -30,6 +31,7 @@ const createNewBizCard = (
     bizAddress,
     bizPhone,
     bizImg,
+    ownerId,
   });
   return bizcard.save();
 };

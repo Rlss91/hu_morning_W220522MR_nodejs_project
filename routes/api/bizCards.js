@@ -14,6 +14,7 @@ const {
   updateBizcardById,
   deleteBizcardById,
 } = require("../../models/bizcards.model");
+const authMiddleware = require("../../middleware/auth.middleware");
 
 // /api/bizcards
 router.get("/", async (req, res) => {
@@ -36,7 +37,7 @@ router.get("/getbyid/:id", async (req, res) => {
   }
 });
 
-router.post("/", async (req, res) => {
+router.post("/", authMiddleware, async (req, res) => {
   /*
     bizName,
     bizDescription,
@@ -51,30 +52,37 @@ router.post("/", async (req, res) => {
       validatedValue.bizDescription,
       validatedValue.bizAddress,
       validatedValue.bizPhone,
-      validatedValue.bizImg
+      validatedValue.bizImg,
+      req.userData.id
     );
     res.status(201).json(userData);
   } catch (err) {
     res.status(400).json({ error: err });
   }
 });
-router.patch("/", async (req, res) => {
+router.patch("/", authMiddleware, async (req, res) => {
   try {
     const validatedValue = await validateUpBizSchema(req.body);
-    const userData = await updateBizcardById(
-      validatedValue.id,
-      validatedValue.bizName,
-      validatedValue.bizDescription,
-      validatedValue.bizAddress,
-      validatedValue.bizPhone,
-      validatedValue.bizImg
-    );
+    const bizCardData = await showBizcardById(validatedValue.id);
+    if (!bizCardData) throw "card not exists";
+    if (bizCardData.ownerId === req.userData.id || req.userData.isAdmin) {
+      await updateBizcardById(
+        validatedValue.id,
+        validatedValue.bizName,
+        validatedValue.bizDescription,
+        validatedValue.bizAddress,
+        validatedValue.bizPhone,
+        validatedValue.bizImg
+      );
+    } else {
+      throw "operation invalid aka unauthorized";
+    }
     res.json({ msg: "bizcard updated" });
   } catch (err) {
     res.status(400).json({ error: err });
   }
 });
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", authMiddleware, async (req, res) => {
   try {
     const validatedValue = await validateDeleteBizSchema(req.params);
     const bizcardData = await deleteBizcardById(validatedValue.id);
