@@ -85,8 +85,14 @@ router.patch("/", authMiddleware, async (req, res) => {
 router.delete("/:id", authMiddleware, async (req, res) => {
   try {
     const validatedValue = await validateDeleteBizSchema(req.params);
-    const bizcardData = await deleteBizcardById(validatedValue.id);
-    res.json(bizcardData);
+    const bizCardData = await showBizcardById(validatedValue.id);
+    if (!bizCardData) throw "card not exists";
+    if (bizCardData.ownerId === req.userData.id || req.userData.isAdmin) {
+      const bizcardDataAfterDelete = await deleteBizcardById(validatedValue.id);
+      res.json(bizcardDataAfterDelete);
+    } else {
+      throw "operation invalid aka unauthorized";
+    }
   } catch (err) {
     res.status(400).json({ error: err });
   }
