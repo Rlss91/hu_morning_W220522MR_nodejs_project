@@ -18,7 +18,11 @@ const createNewUser = (userData) => {
   return newUser.save();
 };
 
+const updatePasswordById = (id, password) =>
+  Users.findByIdAndUpdate(id, { password });
+
 module.exports = {
   findUserByEmail,
   createNewUser,
+  updatePasswordById,
 };

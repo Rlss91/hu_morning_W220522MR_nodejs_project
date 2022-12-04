@@ -6,9 +6,13 @@ const {
   validateLoginSchema,
   validateForgotPasswordSchema,
 } = require("../../validation/auth.validation");
-const { findUserByEmail, createNewUser } = require("../../models/users.model");
+const {
+  findUserByEmail,
+  createNewUser,
+  updatePasswordById,
+} = require("../../models/users.model");
 const { createHash, cmpHash } = require("../../config/bcrypt");
-const { genToken } = require("../../config/jwt");
+const { genToken, verifyToken } = require("../../config/jwt");
 const { json } = require("express");
 
 router.post("/register", async (req, res) => {
@@ -60,6 +64,19 @@ router.post("/forgotpassword", async (req, res) => {
     res.json({ msg: "check your inbox" });
   } catch (error) {
     res.json({ msg: error });
+  }
+});
+
+router.post("/resetpassword/:token", async (req, res) => {
+  try {
+    //add joy for password
+    const payload = await verifyToken(req.params.token);
+    const userData = await findUserByEmail(payload.email);
+    if (!userData) throw "something went wrong";
+    await updatePasswordById(userData._id, req.body.password);
+    res.json({ msg: "password updated" });
+  } catch (err) {
+    res.status(400).json({ err });
   }
 });
 
