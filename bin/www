@@ -3,7 +3,9 @@
 /**
  * Module dependencies.
  */
-require("dotenv").config();
+require("dotenv").config({
+  path: `.env.${process.env.NODE_ENV}`,
+});
 var app = require("../app");
 var debug = require("debug")("bizcard:server");
 var http = require("http");
