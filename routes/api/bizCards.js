@@ -15,6 +15,7 @@ const {
   deleteBizcardById,
 } = require("../../models/bizcards.model");
 const authMiddleware = require("../../middleware/auth.middleware");
+const allowAccessMiddleware = require("../../middleware/allowModify.middleware");
 
 // /api/bizcards
 router.get("/", async (req, res) => {
@@ -60,12 +61,12 @@ router.post("/", authMiddleware, async (req, res) => {
     res.status(400).json({ error: err });
   }
 });
-router.patch("/", authMiddleware, async (req, res) => {
+router.patch("/", authMiddleware, allowAccessMiddleware, async (req, res) => {
   try {
     const validatedValue = await validateUpBizSchema(req.body);
     const bizCardData = await showBizcardById(validatedValue.id);
     if (!bizCardData) throw "card not exists";
-    if (bizCardData.ownerId === req.userData.id || req.userData.isAdmin) {
+    if (bizCardData.ownerId === req.userData.id || req.userData.allowAccess) {
       await updateBizcardById(
         validatedValue.id,
         validatedValue.bizName,
@@ -82,20 +83,27 @@ router.patch("/", authMiddleware, async (req, res) => {
     res.status(400).json({ error: err });
   }
 });
-router.delete("/:id", authMiddleware, async (req, res) => {
-  try {
-    const validatedValue = await validateDeleteBizSchema(req.params);
-    const bizCardData = await showBizcardById(validatedValue.id);
-    if (!bizCardData) throw "card not exists";
-    if (bizCardData.ownerId === req.userData.id || req.userData.isAdmin) {
-      const bizcardDataAfterDelete = await deleteBizcardById(validatedValue.id);
-      res.json(bizcardDataAfterDelete);
-    } else {
-      throw "operation invalid aka unauthorized";
+router.delete(
+  "/:id",
+  authMiddleware,
+  allowAccessMiddleware,
+  async (req, res) => {
+    try {
+      const validatedValue = await validateDeleteBizSchema(req.params);
+      const bizCardData = await showBizcardById(validatedValue.id);
+      if (!bizCardData) throw "card not exists";
+      if (bizCardData.ownerId === req.userData.id || req.userData.allowAccess) {
+        const bizcardDataAfterDelete = await deleteBizcardById(
+          validatedValue.id
+        );
+        res.json(bizcardDataAfterDelete);
+      } else {
+        throw "operation invalid aka unauthorized";
+      }
+    } catch (err) {
+      res.status(400).json({ error: err });
     }
-  } catch (err) {
-    res.status(400).json({ error: err });
   }
-});
+);
 
 module.exports = router;
