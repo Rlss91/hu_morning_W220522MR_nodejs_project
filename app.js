@@ -6,10 +6,10 @@ const debug = require("debug")("bizcard:app");
 const cors = require("cors");
 const helmet = require("helmet");
 
-debug("test");
+// debug("test");
 
-const indexRouter = require("./routes/index");
-const usersRouter = require("./routes/users");
+// const indexRouter = require("./routes/index");
+// const usersRouter = require("./routes/users");
 const apiRouter = require("./routes/api");
 
 const app = express();
@@ -31,24 +31,30 @@ app.use(cookieParser());
 */
 app.use("/api", apiRouter);
 
-//GET http://localhost:3030/
-//end point
-app.get("/", (req, res) => {
-  res.json({ msg: "ok" });
+/* React */
+app.use(express.static(path.join(__dirname, "build")));
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "build", "index.html"));
 });
 
-//GET http://localhost:3030/new
-app.get("/new", (req, res) => {
-  res.json({ msg: "ok" });
-});
+// //GET http://localhost:3030/
+// //end point
+// app.get("/", (req, res) => {
+//   res.json({ msg: "ok" });
+// });
 
-//GET http://localhost:3030/new
-app.get("/auth/login", (req, res) => {
-  res.json({ msg: "ok" });
-});
-//GET http://localhost:3030/new
-app.get("/auth/register", (req, res) => {
-  res.json({ msg: "ok" });
-});
+// //GET http://localhost:3030/new
+// app.get("/new", (req, res) => {
+//   res.json({ msg: "ok" });
+// });
+
+// //GET http://localhost:3030/new
+// app.get("/auth/login", (req, res) => {
+//   res.json({ msg: "ok" });
+// });
+// //GET http://localhost:3030/new
+// app.get("/auth/register", (req, res) => {
+//   res.json({ msg: "ok" });
+// });
 
 module.exports = app;
