@@ -49,6 +49,13 @@ router.post("/login", async (req, res) => {
     });
     res.json({ token });
   } catch (error) {
+    global.logger.warn({
+      method: req.method,
+      error: error.message,
+      url: req.originalUrl,
+      body: req.body,
+      ip: req.ip,
+    });
     res.status(400).json({ error });
   }
 });
